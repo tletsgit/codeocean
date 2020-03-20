@@ -207,6 +207,7 @@ class DockerClient
     # Checks only if container assignment is not nil and not whether the container itself is still present.
     if container
       container.delete(force: true, v: true)
+      DockerContainerPool.remove_from_all_containers(container, @execution_environment)
     end
   rescue Docker::Error::NotFoundError => error
     Rails.logger.error('destroy_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
@@ -411,7 +412,6 @@ class DockerClient
     begin
       clean_container_workspace(container)
     rescue Docker::Error::NotFoundError => error
-      # FIXME: Create new container?
       Rails.logger.info('return_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
       Rails.logger.info('Nothing is done here additionally. The container will be exchanged upon its next retrieval.')
     end
