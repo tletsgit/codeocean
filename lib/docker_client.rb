@@ -7,7 +7,7 @@ class DockerClient
   # Ralf: I suggest to replace this with the environment variable. Ask Hauke why this is not the case!
   LOCAL_WORKSPACE_ROOT = Rails.root.join('tmp', 'files', Rails.env)
   MINIMUM_MEMORY_LIMIT = 4
-  RECYCLE_CONTAINERS = true
+  RECYCLE_CONTAINERS = false
   RETRY_COUNT = 2
 
   attr_reader :container
@@ -81,6 +81,7 @@ class DockerClient
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
 
+    # FIXME: is @container = container
     socket_url = DockerClient.config['ws_host'] + '/v1.27/containers/' + @container.id + '/attach/ws?' + query_params
     socket = Faye::WebSocket::Client.new(socket_url, [], :headers => headers)
 
